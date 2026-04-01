@@ -1,0 +1,14 @@
+{
+  "name": "blade-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4"
+  }
+}
