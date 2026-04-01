@@ -1,4 +1,4 @@
-import {
+  import {
   Client,
   GatewayIntentBits,
   SlashCommandBuilder,
@@ -8,6 +8,13 @@ import {
   Message,
   TextChannel
 } from "discord.js";
+import { createServer } from "http";
+
+// ===== WEB SERVER (FOR RENDER) =====
+createServer((_req, res) => {
+  res.writeHead(200);
+  res.end("Bot is alive!");
+}).listen(3000, "0.0.0.0");
 
 // ===== CLIENT =====
 const client = new Client({
@@ -109,19 +116,16 @@ client.on("interactionCreate", async (interaction) => {
     const forced = cmd.options.getInteger("number");
     const auto = cmd.options.getBoolean("auto");
 
-    // validate min/max
     if (min >= max) {
       await cmd.reply("❌ Min must be smaller than max!");
       return;
     }
 
-    // validate forced number
     if (forced !== null && (forced < min || forced > max)) {
       await cmd.reply("❌ Forced number must be within min/max range!");
       return;
     }
 
-    // ===== AUTO TOGGLE =====
     if (auto !== null) {
       autoGame = auto;
 
@@ -134,17 +138,14 @@ client.on("interactionCreate", async (interaction) => {
         return;
       }
 
-      // auto: true — guard against already-running game
       if (currentCollector) {
         await cmd.reply("❌ A game is already running!");
         return;
       }
 
       await cmd.reply("🔁 Auto mode ENABLED. Starting game...");
-      // fall through to start game
 
     } else {
-      // no auto flag — guard against already-running game
       if (currentCollector) {
         await cmd.reply("❌ A game is already running!");
         return;
@@ -159,7 +160,6 @@ client.on("interactionCreate", async (interaction) => {
       const target =
         forceNumber ?? Math.floor(Math.random() * (max - min + 1)) + min;
 
-      // DM the target number to owner
       try {
         const owner = await client.users.fetch("1340615307282219078");
         await owner.send(`🎯 Number is: ${target}`);
@@ -199,5 +199,6 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-// ===== START ===== 
-client.login(process.env.DISCORD_TOKEN)
+// ===== START =====
+client.login(process.env.DISCORD_TOKEN);
+```
